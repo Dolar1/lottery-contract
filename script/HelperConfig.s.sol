@@ -19,10 +19,9 @@ contract HelperConfig is Script {
     constructor() {
         if (block.chainid == 11155111) {
             activeNetworkConfig = getSepoliaEthConfig();
+        } else {
+            activeNetworkConfig = getOrCreateAnvilEthConfig();
         }
-        // else {
-        //     activeNetworkConfig = getOrCreateAnvilEthConfig();
-        // }
     }
 
     function getSepoliaEthConfig() public view returns (NetworkConfig memory) {
@@ -37,29 +36,29 @@ contract HelperConfig is Script {
             });
     }
 
-    // function getOrCreateAnvilEthConfig() public returns (NetworkConfig memory) {
-    //     if (activeNetworkConfig.vrfCoordinator != address(0)) {
-    //         return activeNetworkConfig;
-    //     }
+    function getOrCreateAnvilEthConfig() public returns (NetworkConfig memory) {
+        if (activeNetworkConfig.vrfCoordinator != address(0)) {
+            return activeNetworkConfig;
+        }
 
-    //     uint96 baseFee = 0.25 ether; // 0.25 LINK
-    //     uint96 gasPriceLink = 1e9; // 1 gwei LINK
+        uint96 baseFee = 0.25 ether; // 0.25 LINK
+        uint96 gasPriceLink = 1e9; // 1 gwei LINK
 
-    //     vm.startBroadcast();
-    //     VRFCoordinatorV2Mock vrfCoordinatorV2Mock = new VRFCoordinatorV2Mock(
-    //         baseFee,
-    //         gasPriceLink
-    //     );
-    //     vm.stopBroadcast();
+        vm.startBroadcast();
+        VRFCoordinatorV2Mock vrfCoordinatorV2Mock = new VRFCoordinatorV2Mock(
+            baseFee,
+            gasPriceLink
+        );
+        vm.stopBroadcast();
 
-    //     return
-    //         NetworkConfig({
-    //             entranceFee: 0.01 ether,
-    //             interval: 30,
-    //             vrfCoordinator: address(vrfCoordinatorV2Mock),
-    //             gasLane: 0x474e34a077df58807dbe9c96d3c009b23b3c6d0cce433e59bbf5b34f823bc56c,
-    //             subscriptionId: 0,
-    //             callBackGasLimit: 500000
-    //         });
-    // }
+        return
+            NetworkConfig({
+                entranceFee: 0.01 ether,
+                interval: 30,
+                vrfCoordinator: address(vrfCoordinatorV2Mock),
+                gasLane: 0x474e34a077df58807dbe9c96d3c009b23b3c6d0cce433e59bbf5b34f823bc56c,
+                subscriptionId: 0,
+                callBackGasLimit: 500000
+            });
+    }
 }
