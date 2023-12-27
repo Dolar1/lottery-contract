@@ -71,7 +71,7 @@ contract Raffle is VRFConsumerBaseV2, AutomationCompatibleInterface {
         if (msg.value < i_entrancefee) {
             revert Raffle__NotEnoughEthSent();
         }
-        if (s_raffleState != RaffleState.CLOSED) {
+        if (s_raffleState != RaffleState.OPEN) {
             revert Raffle__RaffleNotOpen();
         }
         s_players.push(payable(msg.sender));
@@ -133,5 +133,13 @@ contract Raffle is VRFConsumerBaseV2, AutomationCompatibleInterface {
     // getter functions
     function getEntranceFee() external view returns (uint256) {
         return i_entrancefee;
+    }
+
+    function getRaffleState() external view returns (RaffleState) {
+        return s_raffleState;
+    }
+
+    function getPlayer(uint256 indexOfPlayer) external view returns (address) {
+        return s_players[indexOfPlayer];
     }
 }
